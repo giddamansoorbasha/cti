@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CTI | Assistant</title>
+<style>
+*{box-sizing:border-box}body{margin:0;height:100vh;display:flex;flex-direction:column;background:#f3f6fb;color:#172b4d;font-family:Inter,"Segoe UI",Arial,sans-serif}
+header{background:#101c30;color:#fff;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{background:#67d8bd;color:#10243c;font-weight:800;padding:12px;border-radius:11px}.brand h2{font-size:17px;margin:0 0 3px}.brand p{font-size:12px;color:#b9c7dc;margin:0}
+nav{display:flex;gap:9px;align-items:center}nav a,nav button{padding:9px 13px;border:1px solid #456080;background:#1c2d48;color:white;border-radius:8px;text-decoration:none;font-size:13px;cursor:pointer}
+main{width:min(950px,100%);margin:0 auto;flex:1;display:flex;flex-direction:column;min-height:0;padding:20px}
+.intro{margin:8px 0 16px}.intro h1{font-size:25px;margin:0 0 6px}.intro p{color:#64748b;margin:0;font-size:14px}
+#box{flex:1;overflow:auto;background:#fff;border:1px solid #dce5f1;border-radius:15px;padding:18px}
+.m{max-width:85%;padding:12px 15px;border-radius:12px;margin:9px 0;white-space:pre-wrap;line-height:1.55;font-size:14px;overflow-wrap:anywhere}
+.user{background:#e5efff;margin-left:auto;color:#17345d}.bot{background:#f1f5f9;color:#172b4d}
+.src{font-size:12px;color:#64748b;margin-top:9px}.src a{color:#285bb2}
+#chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 0}#chips button{border:1px solid #dce5f1;background:#fff;color:#285bb2;border-radius:20px;padding:8px 12px;font-size:12px;cursor:pointer}
+form{display:flex;gap:9px;background:#fff;border:1px solid #dce5f1;border-radius:12px;padding:10px}
+input{flex:1;min-width:0;padding:11px;border:0;outline:0;font-size:14px}
+select#platform {padding:11px;border:1px solid #dce5f1;border-radius:9px;outline:0;font-size:14px;background:#fff;color:#172b4d;cursor:pointer}
+form button{background:#285bb2;color:#fff;border:0;border-radius:9px;padding:0 20px;font-weight:700;cursor:pointer}
+@media(max-width:600px){header{padding:12px 15px}nav{width:100%}nav a,nav button{flex:1;text-align:center}main{padding:12px}.m{max-width:95%}form{flex-wrap:wrap}select#platform{width:100%}}
+</style></head><body>
+<header>
+ <div class="brand"><div class="logo">CTI</div><div><h2>CTI Assistant</h2><p>Cyber threat intelligence analyst</p></div></div>
+ <nav><a href="/">Dashboard</a><button id="logout">Logout</button></nav>
+</header>
+<main>
+ <div class="intro"><h1>Ask the CTI assistant</h1><p>Ask questions about vulnerabilities, malware, indicators and threat activity.</p></div>
+ <div id="box"></div>
+ <div id="chips"></div>
+ <form id="form">
+  <select id="platform">
+    <option value="general">General</option>
+    <option value="windows">Windows</option>
+    <option value="linux">Linux</option>
+    <option value="android">Android</option>
+  </select>
+  <input id="q" placeholder="Ask about threats... e.g. Active threats on Windows" autocomplete="off"><button>Send</button>
+ </form>
+</main>
+<script>
+const token=localStorage.getItem("token");
+if(!token)location.replace("/login");
+const box=document.getElementById("box");
+function add(who,text){const d=document.createElement("div");d.className="m "+who;d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+async function api(path,body){const r=await fetch(path,{method:body?"POST":"GET",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:body?JSON.stringify(body):undefined});if(r.status===401){localStorage.clear();location.replace("/login");throw new Error("Login required");}const j=await r.json();if(!r.ok)throw new Error(j.detail||"Request failed");return j;}
+async function ask(text){
+    if(!text.trim())return;
+    add("user",text);
+    const w=add("bot","Thinking...");
+    try{
+        const selectedPlatform = document.getElementById("platform").value;
+        const j=await api("/api/chat",{ message: text, platform: selectedPlatform });
+        w.textContent=j.answer;
+        if(j.sources&&j.sources.length){
+            const s=document.createElement("div");s.className="src";
+            j.sources.forEach((x,i)=>{
+                const line=document.createElement("div");
+                line.append(`[${i+1}] ${x.title} (${x.status||"—"}/${x.severity||"—"}) `);
+                if(x.url){
+                    const a=document.createElement("a");a.href=x.url;a.target="_blank";a.rel="noopener noreferrer";a.textContent="Source";line.append(a);
+                }
+                s.append(line);
+            });
+            w.append(s);
+        }
+    }catch(e){
+        w.textContent="Error: "+e.message;
+    }
+}
+["Active threats on Windows","Resolved Linux threats","Evolving Android threats","Tell me about CVE-2024-6387","scan"].forEach(text=>{const b=document.createElement("button");b.textContent=text;b.onclick=()=>ask(text);document.getElementById("chips").appendChild(b);});
+document.getElementById("form").addEventListener("submit",e=>{e.preventDefault();const input=document.getElementById("q"),v=input.value.trim();input.value="";ask(v);});
+document.getElementById("logout").addEventListener("click",()=>{localStorage.clear();location.replace("/login");});
+api("/api/history").then(h=>h.forEach(m=>add(m.role==="user"?"user":"bot",m.content))).catch(()=>{});
+</script></body></html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTI | Threat Intelligence Dashboard</title>
+<style>
+:root{--navy:#101c30;--blue:#285bb2;--teal:#67d8bd;--bg:#f3f6fb;--text:#172b4d;--muted:#64748b;--border:#dce5f1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif}
+header{background:var(--navy);color:#fff;padding:15px max(5%,calc((100% - 1400px)/2));display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:14px}.logo{background:var(--teal);color:#10243c;font-weight:800;padding:15px;border-radius:13px}.brand h2{font-size:19px;margin:0 0 4px}.brand p{margin:0;color:#b9c7dc;font-size:13px}
+nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.nav-btn{border:1px solid #456080;background:#1c2d48;color:#fff;border-radius:9px;padding:11px 16px;text-decoration:none;font-size:14px;font-weight:600;cursor:pointer}.nav-btn.primary{background:var(--blue);border-color:var(--blue)}
+.container{max-width:1400px;margin:auto;padding:36px 28px}.eyebrow{color:#087d78;font-size:13px;font-weight:800;letter-spacing:1.4px}h1{font-size:clamp(29px,4vw,43px);margin:15px 0 9px;letter-spacing:-1.2px}.subtitle{color:var(--muted);font-size:17px;line-height:1.65;max-width:780px;margin:0 0 26px}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:13px;margin:25px 0}.stat{background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px;min-height:112px}.number{display:block;font-size:29px;font-weight:800;margin-bottom:8px}.label{color:var(--muted);font-size:14px}.line{width:35px;height:4px;background:var(--blue);margin-top:12px;border-radius:4px}.red .line{background:#dc3545}.orange .line{background:#d97706}.green .line{background:#15966b}.teal .line{background:#0d9488}
+.panel{background:#fff;border:1px solid var(--border);border-radius:17px;margin-bottom:19px;overflow:hidden}.panel-heading{padding:21px 24px 13px}.panel-heading h2{font-size:21px;margin:0 0 8px}.panel-heading p{color:var(--muted);margin:0;font-size:14px;line-height:1.6}
+.filters{padding:0 24px 21px}.search{width:100%;padding:14px;font-size:16px;border:1px solid var(--border);border-radius:11px;outline:none;margin:5px 0 12px}.search:focus,select:focus{border-color:var(--blue)}.filter-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:9px}select{width:100%;padding:12px;background:#fff;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px}.search-btn{background:var(--blue);color:#fff;border:0;padding:12px 23px;border-radius:10px;font-weight:700;cursor:pointer}
+.report-list{border-top:1px solid var(--border);padding:19px 24px}.report{border:1px solid var(--border);padding:16px 18px;border-radius:12px;margin-bottom:11px;transition:.15s}.report:hover{border-color:#91acd3;transform:translateY(-1px)}.report h3{font-size:16px;margin:0 0 10px;line-height:1.5}.report h3 a{color:var(--text);text-decoration:none}.report h3 a:hover{color:var(--blue)}.meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.tag{display:inline-block;color:#fff;font-size:12px;padding:5px 10px;border-radius:20px;font-weight:600;background:#64748b}.sev-critical,.sev-high{background:#dc3545}.sev-medium{background:#e68a12}.sev-low{background:#218448}.status-active{background:#d43c37}.status-resolved{background:#218448}.status-evolving{background:#a15bc0}.status-anticipated{background:#285bb2}.date,.source{color:var(--muted);font-size:12px}.summary{color:var(--muted);font-size:14px;line-height:1.6;margin:11px 0 0}.report-footer{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap}.report-footer a{color:var(--blue);font-size:13px;font-weight:600;text-decoration:none}.empty,.error,.loading{text-align:center;padding:34px 10px;color:var(--muted)}.error{color:#dc3545}.pagination{display:flex;justify-content:center;align-items:center;gap:14px;margin:20px 0 4px}.pagination button{border:1px solid var(--border);background:#fff;padding:9px 16px;border-radius:8px;color:var(--text);cursor:pointer}.pagination button:disabled{opacity:.4;cursor:not-allowed}footer{text-align:center;padding:18px;color:var(--muted);font-size:12px}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(3,1fr)}.filter-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){header{padding:14px 17px}.brand h2{font-size:15px}.brand p{font-size:11px}nav{width:100%}.nav-btn{flex:1;text-align:center;padding:10px 7px}.container{padding:24px 14px}.stats{grid-template-columns:repeat(2,1fr);gap:9px}.stat{padding:14px;min-height:98px}.number{font-size:24px}.filter-row{grid-template-columns:1fr 1fr}.search-btn{grid-column:span 2}.filters,.report-list{padding-left:13px;padding-right:13px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">CTI</div><div><h2>Cyber Threat Intelligence Platform</h2><p>Monitor reports, indicators, and emerging risks</p></div></div>
+  <nav><a class="nav-btn" href="/chat-ui">Ask CTI Assistant →</a><button class="nav-btn primary" id="refresh">Refresh threats</button><button class="nav-btn" id="logout">Logout</button></nav>
+</header>
+<main class="container">
+  <div class="eyebrow">THREAT OPERATIONS</div><h1>Intelligence dashboard</h1>
+  <p class="subtitle">Monitor cyber threats across platforms. Explore vulnerabilities, malware, indicators and emerging security risks.</p>
+  <section class="stats">
+    <div class="stat"><span class="number" id="total">—</span><span class="label">Total threats</span><div class="line"></div></div>
+    <div class="stat red"><span class="number" id="critical">—</span><span class="label">Critical threats</span><div class="line"></div></div>
+    <div class="stat orange"><span class="number" id="high">—</span><span class="label">High severity</span><div class="line"></div></div>
+    <div class="stat"><span class="number" id="sourcesCount">—</span><span class="label">Sources monitored</span><div class="line"></div></div>
+    <div class="stat green"><span class="number" id="active">—</span><span class="label">Active threats</span><div class="line"></div></div>
+    <div class="stat teal"><span class="number" id="searchable">—</span><span class="label">Searchable threats</span><div class="line"></div></div>
+  </section>
+  <section class="panel">
+    <div class="panel-heading"><h2>Threat reports</h2><p>Search, filter and investigate collected cyber threat intelligence.</p></div>
+    <div class="filters">
+      <input class="search" id="search" placeholder="Search reports, CVEs, IPs, domains or hashes">
+      <div class="filter-row">
+        <select id="type"><option value="">All types</option><option>Vulnerability</option><option>Malware</option><option>Ransomware</option><option>Phishing</option><option>Data Breach</option><option>Other</option></select>
+        <select id="severity"><option value="">All severities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+        <select id="platform"><option value="">All platforms</option></select>
+        <select id="status"><option value="">All lifecycle stages</option><option>Active</option><option>Evolving</option><option>Anticipated</option><option>Resolved</option><option>Unclassified</option></select>
+        <select id="source"><option value="">All sources</option></select>
+        <button class="search-btn" id="searchBtn">Search</button>
+      </div>
+    </div>
+    <div class="report-list"><div id="reports" class="loading">Loading threat reports...</div>
+      <div class="pagination"><button id="previous">← Previous</button><span id="pageInfo">Page 1</span><button id="next">Next →</button></div>
+    </div>
+  </section>
+</main>
+<footer>Cyber Threat Intelligence Platform · CTI</footer>
+<script>
+const token=localStorage.getItem("token"),role=localStorage.getItem("role");
+const $=id=>document.getElementById(id);
+if(!token) location.replace("/login");
+if(role!=="admin") $("refresh").style.display="none";
+let page=1,pages=1;const pageSize=50;
+async function api(path,options={}) {
+  const response=await fetch(path,{...options,headers:{...(options.headers||{}),Authorization:"Bearer "+token}});
+  if(response.status===401){localStorage.clear();location.replace("/login");throw new Error("Login required");}
+  const data=await response.json();if(!response.ok)throw new Error(data.detail||"Request failed");return data;
+}
+function set(id,value){$(id).textContent=value??0;}
+function populateSelect(id,values){const el=$(id),first=el.options[0];el.replaceChildren(first);values.forEach(v=>{if(!v)return;const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o);});}
+async function loadDashboard(){
+  const d=await api("/api/dashboard");
+  set("total",d.total);set("critical",d.critical);set("high",d.high);set("sourcesCount",d.sources_monitored);set("active",d.active);set("searchable",d.searchable);
+  populateSelect("platform",d.platforms||[]);populateSelect("source",d.sources||[]);
+}
+function tag(value,cls=""){const el=document.createElement("span");el.className="tag "+cls;el.textContent=value||"Unclassified";return el;}
+function formatDate(value){if(!value)return "Date unavailable";const d=new Date(value);return isNaN(d)?"Date unavailable":d.toLocaleDateString();}
+function renderReports(reports){
+  const root=$("reports");root.replaceChildren();
+  if(!reports.length){root.className="empty";root.textContent="No matching threat reports found.";return;}
+  root.className="";
+  reports.forEach(r=>{
+    const card=document.createElement("article");card.className="report";
+    const h=document.createElement("h3"),a=document.createElement("a");a.textContent=r.title||"Untitled threat report";
+    if(r.url){a.href=r.url;a.target="_blank";a.rel="noopener noreferrer";}h.appendChild(a);
+    const meta=document.createElement("div");meta.className="meta";
+    meta.append(tag(r.type),tag(r.severity,"sev-"+(r.severity||"").toLowerCase()),tag(r.status,"status-"+(r.status||"").toLowerCase()));
+    const date=document.createElement("span");date.className="date";date.textContent=formatDate(r.published_at);
+    const source=document.createElement("span");source.className="source";source.textContent=r.source||"Unknown source";meta.append(date,source);card.append(h,meta);
+    if(r.summary){const p=document.createElement("p");p.className="summary";p.textContent=r.summary;card.appendChild(p);}
+    const foot=document.createElement("div");foot.className="report-footer";
+    (r.platforms||[]).forEach(p=>foot.appendChild(tag(p)));
+    const cves=(r.iocs||[]).filter(x=>x.type==="cve").map(x=>x.value);
+    if(cves.length){const c=document.createElement("span");c.className="source";c.textContent=cves.join(", ");foot.appendChild(c);}
+    card.appendChild(foot);root.appendChild(card);
+  });
+}
+async function loadReports(){
+  const root=$("reports");root.textContent="Loading threat reports...";root.className="loading";
+  const params=new URLSearchParams({q:$("search").value.trim(),type:$("type").value,severity:$("severity").value,platform:$("platform").value,status:$("status").value,source:$("source").value,page,limit:pageSize});
+  try{const d=await api("/api/threats?"+params);pages=Math.max(1,d.pages||1);renderReports(d.reports||[]);$("pageInfo").textContent=`Page ${d.page} of ${pages} · ${d.total} reports`;$("previous").disabled=page<=1;$("next").disabled=page>=pages;}
+  catch(e){root.textContent="Could not load reports: "+e.message;root.className="error";}
+}
+function search(){page=1;loadReports();}
+$("searchBtn").addEventListener("click",search);$("search").addEventListener("keydown",e=>{if(e.key==="Enter")search();});
+["type","severity","platform","status","source"].forEach(id=>$(id).addEventListener("change",search));
+$("previous").addEventListener("click",()=>{if(page>1){page--;loadReports();}});
+$("next").addEventListener("click",()=>{if(page<pages){page++;loadReports();}});
+$("logout").addEventListener("click",()=>{localStorage.clear();location.replace("/login");});
+$("refresh").addEventListener("click",async()=>{const b=$("refresh");b.disabled=true;b.textContent="Refreshing...";try{await api("/api/admin/refresh",{method:"POST"});await loadDashboard();page=1;await loadReports();}catch(e){alert("Refresh failed: "+e.message);}finally{b.disabled=false;b.textContent="Refresh threats";}});
+async function init(){try{await loadDashboard();}catch(e){$("reports").textContent="Could not load dashboard: "+e.message;$("reports").className="error";return;}await loadReports();}
+init();
+</script>
+</body>
+</html>

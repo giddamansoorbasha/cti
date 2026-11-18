@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CTI | Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f3f6fb;color:#172b4d;font-family:Inter,"Segoe UI",Arial,sans-serif;padding:20px}
+.card{width:min(420px,100%);background:#fff;border:1px solid #dce5f1;border-radius:18px;padding:34px;box-shadow:0 16px 45px rgba(16,28,48,.08)}
+.brand{display:flex;align-items:center;gap:13px;margin-bottom:27px}.logo{background:#67d8bd;color:#10243c;font-weight:800;padding:15px;border-radius:13px}.brand h1{font-size:21px;margin:0 0 4px}.brand p{font-size:13px;color:#64748b;margin:0}
+label{display:block;font-size:13px;font-weight:650;margin:15px 0 7px}input{width:100%;padding:13px;border:1px solid #dce5f1;border-radius:9px;font-size:15px;outline:none}input:focus{border-color:#285bb2}
+button{width:100%;padding:13px;border:0;border-radius:9px;background:#285bb2;color:white;font-weight:700;font-size:15px;cursor:pointer;margin-top:17px}button.alt{margin-top:9px;background:#eef3fa;color:#172b4d}
+#msg{min-height:22px;margin-top:13px;font-size:13px;color:#dc3545}#msg.ok{color:#16845c}
+.note{font-size:12px;color:#64748b;line-height:1.6;margin-top:20px}
+</style></head><body>
+<main class="card">
+  <div class="brand"><div class="logo">CTI</div><div><h1>Threat Intelligence Platform</h1><p>Sign in to monitor cyber threats</p></div></div>
+  <label for="u">Username</label><input id="u" autocomplete="username" placeholder="Enter username">
+  <label for="p">Password</label><input id="p" type="password" autocomplete="current-password" placeholder="Enter password">
+  <button onclick="go('login')">Sign in</button>
+  <button class="alt" onclick="go('register')">Create viewer account</button>
+  <div id="msg"></div>
+  <p class="note">New registrations receive the viewer role. Contact an administrator if you need analyst or admin access.</p>
+</main>
+<script>
+async function go(kind){
+ const msg=document.getElementById("msg");msg.className="";msg.textContent="Please wait...";
+ const body={username:document.getElementById("u").value.trim(),password:document.getElementById("p").value};
+ try{
+  const r=await fetch("/api/"+kind,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  const j=await r.json();if(!r.ok)throw new Error(j.detail||"Request failed");
+  if(kind==="register"){msg.className="ok";msg.textContent="Account created. Sign in now.";return;}
+  localStorage.setItem("token",j.token);localStorage.setItem("role",j.role);localStorage.setItem("username",j.username);location.replace("/");
+ }catch(e){msg.textContent=e.message;}
+}
+document.addEventListener("keydown",e=>{if(e.key==="Enter")go("login");});
+</script></body></html>

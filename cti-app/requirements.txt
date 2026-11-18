@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pymongo
+feedparser
+requests
+numpy
+bcrypt
+PyJWT
