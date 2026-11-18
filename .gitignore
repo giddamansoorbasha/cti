@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local database, TLS, and lab artifacts
+docker/replica-set/keyfile
+docker/replica-set/keyfile.*
+docker/tls/certs/
+**/backups/
+**/*.bson
+**/*.dump
+**/metrics.log
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
