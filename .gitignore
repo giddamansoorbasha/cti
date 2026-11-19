@@ -21,6 +21,7 @@ docker/tls/certs/
 **/*.bson
 **/*.dump
 **/metrics.log
+/labresults
 
 # IDE and OS files
 .vscode/
