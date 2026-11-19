@@ -1,0 +1,84 @@
+3 course documents inserted.
+
+Courses meeting on Monday:
+{'title': 'Database Systems', 'code': 'CS401', 'instructor': 'Dr. Sharma', 'schedule': {'days': ['Monday', 'Wednesday'], 'times': '10:00-11:30', 'room': 'Room 101'}, 'roster': [{'name': 'Ravi Kumar', 'student_id': 'S001', 'grade': 'A'}, {'name': 'Anjali Rao', 'student_id': 'S002', 'grade': 'B+'}]}
+{'title': 'Computer Networks', 'code': 'CS403', 'instructor': 'Dr. Mehta', 'schedule': {'days': ['Monday', 'Friday'], 'times': '13:00-14:30', 'room': 'Room 103'}, 'roster': [{'name': 'Anjali Rao', 'student_id': 'S002', 'grade': 'A'}, {'name': 'Sneha Reddy', 'student_id': 'S004', 'grade': 'B'}]}
+
+Students enrolled in courses taught by Dr. Sharma:
+Ravi Kumar (ID: S001) - Course: Database Systems
+Anjali Rao (ID: S002) - Course: Database Systems
+Kiran Patel (ID: S003) - Course: Operating Systems
+Ravi Kumar (ID: S001) - Course: Operating Systems
+
+Saved to output.json
+Prerequisites added to courses.
+
+All courses with their prerequisites:
+{'title': 'Database Systems', 'code': 'CS401', 'prerequisites': []}
+{'title': 'Operating Systems', 'code': 'CS402', 'prerequisites': ['CS401']}
+{'title': 'Computer Networks', 'code': 'CS403', 'prerequisites': ['CS401', 'CS402']}
+
+Saved to output.json
+
+Design justification:
+Prerequisites are embedded as an array of course codes inside each
+course document, not stored in a separate collection.
+
+Reasons:
+1. Prerequisites are small, fixed-size lists (rarely more than 2-4 courses)
+   that don't grow unbounded - ideal for embedding.
+2. They are almost always read together with the course itself
+   (e.g. showing a course page with its requirements) - embedding avoids
+   an extra $lookup/join on every read.
+3. They rarely change independently of the course - low write frequency.
+4. Referencing would be better only if prerequisite courses needed to be
+   queried/updated independently at scale, or if a course could have
+   hundreds of prerequisites - not the case here.
+
+5 posts inserted.
+10 comments inserted.
+
+Post with comments (using $lookup):
+[{'_id': ObjectId('6afb1490b4c85cb3e85e0719'), 'title': 'Intro to MongoDB', 'author': 'Mansoor', 'content': 'MongoDB basics...', 'comments': [{'_id': ObjectId('6afb1490b4c85cb3e85e071e'), 'post_id': ObjectId('6afb1490b4c85cb3e85e0719'), 'author': 'User1', 'text': 'This is comment number 1'}, {'_id': ObjectId('6afb1490b4c85cb3e85e0723'), 'post_id': ObjectId('6afb1490b4c85cb3e85e0719'), 'author': 'User6', 'text': 'This is comment number 6'}]}]
+
+Migration complete. New collection: posts_embedded
+
+Sample embedded document:
+{'_id': ObjectId('6afb1490b4c85cb3e85e0719'), 'title': 'Intro to MongoDB', 'author': 'Mansoor', 'content': 'MongoDB basics...', 'comments': [{'_id': ObjectId('6afb1490b4c85cb3e85e071e'), 'post_id': ObjectId('6afb1490b4c85cb3e85e0719'), 'author': 'User1', 'text': 'This is comment number 1'}, {'_id': ObjectId('6afb1490b4c85cb3e85e0723'), 'post_id': ObjectId('6afb1490b4c85cb3e85e0719'), 'author': 'User6', 'text': 'This is comment number 6'}]}
+
+Query count comparison to display a post with its comments:
+- Referenced design : 2 queries (1 for post + 1 for comments)
+                       OR 1 query if using $lookup aggregation
+- Embedded design    : 1 query (single find() - comments already inside)
+
+Embedded design always needs exactly 1 query regardless of $lookup use,
+while referenced design needs 2 separate queries without aggregation.
+
+Saved to output.json
+Approximate document size with 10,000 embedded comments: 1.30 MB
+MongoDB's hard document size limit is 16 MB.
+
+
+Why embedding 10,000 comments is problematic:
+1. Document size limit - MongoDB caps documents at 16MB. A post with
+   10,000+ comments can easily exceed this as comments grow in length.
+2. Write performance - every new comment requires rewriting/growing the
+   entire parent document, causing expensive in-place update overhead
+   and document relocation on disk.
+3. Read overhead - fetching the post (e.g. just the title) always pulls
+   all 10,000 comments too, wasting bandwidth and memory even when
+   comments aren't needed.
+4. No pagination - embedded arrays make "show 20 comments per page"
+   awkward; you'd need $slice tricks instead of a simple query.
+
+Alternative design - Referenced (hybrid) approach:
+- Keep comments in a SEPARATE "comments" collection, referencing
+  post_id (as already built in Activity 3.2's referenced design).
+- Optionally embed only the latest 5-10 comments in the post document
+  for fast preview, while the full list lives in the comments
+  collection with pagination (skip/limit or cursor-based).
+- Add an index on post_id in the comments collection for fast lookups.
+- This is the "extended reference" / hybrid pattern - avoids the 16MB
+  limit and keeps writes cheap regardless of comment volume.
+
+Saved to output.json
