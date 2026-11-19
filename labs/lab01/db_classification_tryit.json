@@ -1,0 +1,20 @@
+[
+  {
+    "product": "ScyllaDB",
+    "family": "Column-Family Store (Wide-Column)",
+    "spans_multiple_families": false,
+    "reasoning": "Drop-in replacement for Cassandra; same wide-column data model (partition key + clustering columns) and CQL."
+  },
+  {
+    "product": "InfluxDB",
+    "family": "Time-Series (closest to Column-Family / Key-Value)",
+    "spans_multiple_families": true,
+    "reasoning": "Keyed by timestamp + tags, optimized for append-only writes \u2014 behaves like both column-family and key-value."
+  },
+  {
+    "product": "ArangoDB",
+    "family": "Multi-Model (Document + Graph + Key-Value)",
+    "spans_multiple_families": true,
+    "reasoning": "Natively supports documents, graphs, and key-value pairs in one engine queryable via AQL \u2014 spans multiple families by design."
+  }
+]

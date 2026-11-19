@@ -1,0 +1,26 @@
+[
+  {
+    "app": "Hospital Patient Management",
+    "data_domain": "Live patient vitals",
+    "family": "Key-Value / Time-Series (e.g., Redis, InfluxDB)",
+    "reasoning": "Written every few seconds per patient, read by ID for real-time alerts."
+  },
+  {
+    "app": "Hospital Patient Management",
+    "data_domain": "Patient medical records",
+    "family": "Document Database (e.g., MongoDB)",
+    "reasoning": "Nested, semi-structured (visits, allergies, prescriptions) \u2014 flexible schema needed."
+  },
+  {
+    "app": "Hospital Patient Management",
+    "data_domain": "Lab test result history",
+    "family": "Column-Family Store (e.g., Cassandra)",
+    "reasoning": "Append-only, high volume, queried by patient ID + date range."
+  },
+  {
+    "app": "Hospital Patient Management",
+    "data_domain": "Doctor-patient referral network",
+    "family": "Graph Database (e.g., Neo4j)",
+    "reasoning": "Multi-hop traversal for referral paths, specialist networks, fraud detection."
+  }
+]

@@ -1,0 +1,43 @@
+from pymongo import MongoClient
+import json
+
+client = MongoClient("mongodb://localhost:27015")
+db = client["nosql_exercise"]
+collection = db["app_family_mapping"]
+
+mapping = [
+    {"app": "Ride-sharing (Uber-like)", "data_domain": "Driver locations",
+     "family": "Key-Value Store (e.g., Redis)",
+     "reasoning": "Written very frequently, read by driver ID, no complex querying needed."},
+
+    {"app": "Ride-sharing (Uber-like)", "data_domain": "User profiles",
+     "family": "Document Database (e.g., MongoDB)",
+     "reasoning": "Self-contained unit with nested fields (addresses, preferences, payment methods)."},
+
+    {"app": "Ride-sharing (Uber-like)", "data_domain": "Ride history",
+     "family": "Column-Family Store (e.g., Cassandra)",
+     "reasoning": "Append-only, queried by rider ID and date range — matches high-write time-ordered pattern."},
+
+    {"app": "Ride-sharing (Uber-like)", "data_domain": "Driver-rider relationship graph",
+     "family": "Graph Database (e.g., Neo4j)",
+     "reasoning": "Needs efficient traversal for connections, referral networks, fraud detection."},
+
+    {"app": "Social Media Analytics", "data_domain": "Raw post storage",
+     "family": "Column-Family Store (e.g., Cassandra)",
+     "reasoning": "High write throughput, time-series access pattern for millions of posts/day."},
+
+    {"app": "Social Media Analytics", "data_domain": "Real-time analytics / trending topics",
+     "family": "Key-Value Store (e.g., Redis)",
+     "reasoning": "In-memory counters/caches for sub-millisecond reads, durable copy backed by column-family."},
+]
+
+collection.delete_many({})
+collection.insert_many(mapping)
+
+for doc in collection.find({}, {"_id": 0}):
+    print(doc)
+
+with open(r"lab01/app_family_mapping.json", "w") as f:
+    json.dump(list(collection.find({}, {"_id": 0})), f, indent=2)
+
+print("\nExported to app_family_mapping.json")

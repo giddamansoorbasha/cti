@@ -1,0 +1,26 @@
+{'product': 'Amazon S3', 'family': 'Key-Value Store (Object Store)', 'reasoning': 'Data is stored and retrieved by a unique object key with no internal querying capability.', 'best_for': 'Storing large unstructured objects (images, backups, logs) accessed by key at massive scale.', 'limitation': 'No secondary indexing or complex querying on object content.'}
+{'product': 'Couchbase', 'family': 'Document Database', 'reasoning': 'Stores JSON documents and supports secondary indexes and querying on document fields.', 'best_for': 'Content management / catalog systems needing flexible schema and fast reads/writes.', 'limitation': 'Multi-document ACID transactions across shards are more complex than in RDBMS.'}
+{'product': 'Apache HBase', 'family': 'Column-Family Store', 'reasoning': 'Organizes data into column families and is optimized for wide rows with millions of columns.', 'best_for': 'Large-scale time-series / sensor data with very high write throughput (e.g., IoT telemetry).', 'limitation': 'No native secondary indexes; ad-hoc queries not part of a fixed row key are inefficient.'}
+{'product': 'Amazon Neptune', 'family': 'Graph Database', 'reasoning': 'Designed specifically for storing and querying property graph data using SPARQL and Gremlin.', 'best_for': 'Social networks / recommendation engines needing fast multi-hop relationship traversal.', 'limitation': 'Not efficient for simple key lookups or bulk analytical scans of flat data.'}
+{'product': 'Memcached', 'family': 'Key-Value Store', 'reasoning': 'Stores arbitrary byte arrays indexed by string keys with no query capability.', 'best_for': 'Caching frequently accessed data (session data, query results) to reduce DB load.', 'limitation': 'Data is volatile (in-memory only, no persistence) and has no querying beyond exact key lookup.'}
+
+Exported to db_classification.json
+{'product': 'ScyllaDB', 'family': 'Column-Family Store (Wide-Column)', 'spans_multiple_families': False, 'reasoning': 'Drop-in replacement for Cassandra; same wide-column data model (partition key + clustering columns) and CQL.'}
+{'product': 'InfluxDB', 'family': 'Time-Series (closest to Column-Family / Key-Value)', 'spans_multiple_families': True, 'reasoning': 'Keyed by timestamp + tags, optimized for append-only writes ù behaves like both column-family and key-value.'}
+{'product': 'ArangoDB', 'family': 'Multi-Model (Document + Graph + Key-Value)', 'spans_multiple_families': True, 'reasoning': 'Natively supports documents, graphs, and key-value pairs in one engine queryable via AQL ù spans multiple families by design.'}
+
+Exported to db_classification_tryit.json
+{'app': 'Ride-sharing (Uber-like)', 'data_domain': 'Driver locations', 'family': 'Key-Value Store (e.g., Redis)', 'reasoning': 'Written very frequently, read by driver ID, no complex querying needed.'}
+{'app': 'Ride-sharing (Uber-like)', 'data_domain': 'User profiles', 'family': 'Document Database (e.g., MongoDB)', 'reasoning': 'Self-contained unit with nested fields (addresses, preferences, payment methods).'}
+{'app': 'Ride-sharing (Uber-like)', 'data_domain': 'Ride history', 'family': 'Column-Family Store (e.g., Cassandra)', 'reasoning': 'Append-only, queried by rider ID and date range ù matches high-write time-ordered pattern.'}
+{'app': 'Ride-sharing (Uber-like)', 'data_domain': 'Driver-rider relationship graph', 'family': 'Graph Database (e.g., Neo4j)', 'reasoning': 'Needs efficient traversal for connections, referral networks, fraud detection.'}
+{'app': 'Social Media Analytics', 'data_domain': 'Raw post storage', 'family': 'Column-Family Store (e.g., Cassandra)', 'reasoning': 'High write throughput, time-series access pattern for millions of posts/day.'}
+{'app': 'Social Media Analytics', 'data_domain': 'Real-time analytics / trending topics', 'family': 'Key-Value Store (e.g., Redis)', 'reasoning': 'In-memory counters/caches for sub-millisecond reads, durable copy backed by column-family.'}
+
+Exported to app_family_mapping.json
+{'app': 'Hospital Patient Management', 'data_domain': 'Live patient vitals', 'family': 'Key-Value / Time-Series (e.g., Redis, InfluxDB)', 'reasoning': 'Written every few seconds per patient, read by ID for real-time alerts.'}
+{'app': 'Hospital Patient Management', 'data_domain': 'Patient medical records', 'family': 'Document Database (e.g., MongoDB)', 'reasoning': 'Nested, semi-structured (visits, allergies, prescriptions) ù flexible schema needed.'}
+{'app': 'Hospital Patient Management', 'data_domain': 'Lab test result history', 'family': 'Column-Family Store (e.g., Cassandra)', 'reasoning': 'Append-only, high volume, queried by patient ID + date range.'}
+{'app': 'Hospital Patient Management', 'data_domain': 'Doctor-patient referral network', 'family': 'Graph Database (e.g., Neo4j)', 'reasoning': 'Multi-hop traversal for referral paths, specialist networks, fraud detection.'}
+
+Exported to healthcare_family_mapping.json
