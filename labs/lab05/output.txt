@@ -1,0 +1,43 @@
+
+Total orders: 12
+
+--- MONTHLY REVENUE ---
+{'_id': '2026-01', 'total_revenue': 91500}
+{'_id': '2026-02', 'total_revenue': 81500}
+{'_id': '2026-03', 'total_revenue': 80500}
+
+--- TOP 3 CUSTOMERS ---
+{'_id': 'Mansoor', 'total_spending': 131500, 'products': ['Laptop', 'Mouse', 'Laptop']}
+{'_id': 'Rahul', 'total_spending': 68000, 'products': ['Mouse', 'Laptop', 'Mouse']}
+{'_id': 'Arjun', 'total_spending': 39000, 'products': ['Monitor', 'Keyboard', 'Monitor']}
+
+--- AVERAGE ORDER VALUE BY STATUS ---
+{'_id': 'Cancelled', 'average_order_value': 3000.0, 'total_orders': 1}
+{'_id': 'Delivered', 'average_order_value': 22812.5, 'total_orders': 8}
+{'_id': 'Pending', 'average_order_value': 22666.666666666668, 'total_orders': 3}
+Total orders: 10
+
+--- SALES BUCKET ANALYSIS ---
+{'_id': 0, 'order_count': 3, 'total_revenue': 105, 'orders': [{'customer': 'Mansoor', 'product': 'Pen', 'order_value': 20}, {'customer': 'Rahul', 'product': 'Notebook', 'order_value': 45}, {'customer': 'Mansoor', 'product': 'Notebook', 'order_value': 40}], 'category': 'Small'}
+{'_id': 50, 'order_count': 1, 'total_revenue': 50, 'orders': [{'customer': 'Mansoor', 'product': 'USB Cable', 'order_value': 50}], 'category': 'Medium'}
+{'_id': 200.01, 'order_count': 6, 'total_revenue': 82000, 'orders': [{'customer': 'Priya', 'product': 'Mouse', 'order_value': 500}, {'customer': 'Arjun', 'product': 'Keyboard', 'order_value': 1500}, {'customer': 'Rahul', 'product': 'Headphones', 'order_value': 2500}, {'customer': 'Priya', 'product': 'Monitor', 'order_value': 12000}, {'customer': 'Arjun', 'product': 'Laptop', 'order_value': 65000}, {'customer': 'Rahul', 'product': 'Mouse', 'order_value': 500}], 'category': 'Large'}
+Products: 6
+Orders: 12
+
+--- ORDERS WITH PRODUCT DETAILS ---
+{'order_id': 1, 'quantity': 1, 'product_name': 'Laptop', 'unit_price': 65000, 'total_price': 65000}
+{'order_id': 2, 'quantity': 2, 'product_name': 'Mouse', 'unit_price': 500, 'total_price': 1000}
+{'order_id': 3, 'quantity': 1, 'product_name': 'Keyboard', 'unit_price': 1500, 'total_price': 1500}
+{'order_id': 4, 'quantity': 1, 'product_name': 'Monitor', 'unit_price': 12000, 'total_price': 12000}
+{'order_id': 5, 'quantity': 2, 'product_name': 'Laptop', 'unit_price': 65000, 'total_price': 130000}
+{'order_id': 6, 'quantity': 3, 'product_name': 'Mouse', 'unit_price': 500, 'total_price': 1500}
+{'order_id': 7, 'quantity': 2, 'product_name': 'Keyboard', 'unit_price': 1500, 'total_price': 3000}
+{'order_id': 8, 'quantity': 1, 'product_name': 'Monitor', 'unit_price': 12000, 'total_price': 12000}
+{'order_id': 9, 'quantity': 1, 'product_name': 'Laptop', 'unit_price': 65000, 'total_price': 65000}
+{'order_id': 10, 'quantity': 1, 'product_name': 'Mouse', 'unit_price': 500, 'total_price': 500}
+{'order_id': 11, 'quantity': 3, 'product_name': 'Keyboard', 'unit_price': 1500, 'total_price': 4500}
+{'order_id': 12, 'quantity': 2, 'product_name': 'Monitor', 'unit_price': 12000, 'total_price': 24000}
+
+--- PRODUCTS NEVER ORDERED ---
+{'_id': 'P105', 'name': 'Headphones', 'base_price': 2500}
+{'_id': 'P106', 'name': 'Webcam', 'base_price': 3500}
