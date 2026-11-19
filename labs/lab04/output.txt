@@ -1,0 +1,94 @@
+10 products inserted.
+
+Products priced between 20 and 50:
+{'sku': 'A', 'name': 'Wireless Mouse', 'price': 25, 'stock': 15, 'tags': ['electronics', 'wireless']}
+{'sku': 'B', 'name': 'USB Keyboard', 'price': 30, 'stock': 0, 'tags': ['electronics']}
+{'sku': 'C', 'name': 'Bluetooth Speaker', 'price': 45, 'stock': 8, 'tags': ['electronics', 'wireless', 'premium']}
+
+Out-of-stock products (stock == 0):
+{'sku': 'B', 'name': 'USB Keyboard', 'price': 30, 'stock': 0, 'tags': ['electronics']}
+{'sku': 'F', 'name': 'Gaming Chair', 'price': 150, 'stock': 0, 'tags': ['furniture', 'premium']}
+{'sku': 'J', 'name': 'Notebook Set', 'price': 8, 'stock': 0, 'tags': ['stationery']}
+
+Out of stock OR priced above 100:
+{'sku': 'B', 'name': 'USB Keyboard', 'price': 30, 'stock': 0, 'tags': ['electronics']}
+{'sku': 'F', 'name': 'Gaming Chair', 'price': 150, 'stock': 0, 'tags': ['furniture', 'premium']}
+{'sku': 'I', 'name': 'Office Desk', 'price': 200, 'stock': 5, 'tags': ['furniture']}
+{'sku': 'J', 'name': 'Notebook Set', 'price': 8, 'stock': 0, 'tags': ['stationery']}
+
+In stock AND tagged 'premium':
+{'sku': 'C', 'name': 'Bluetooth Speaker', 'price': 45, 'stock': 8, 'tags': ['electronics', 'wireless', 'premium']}
+{'sku': 'E', 'name': 'Leather Wallet', 'price': 60, 'stock': 12, 'tags': ['accessories', 'premium']}
+
+Products with BOTH 'electronics' AND 'wireless' tags:
+{'sku': 'A', 'name': 'Wireless Mouse', 'price': 25, 'stock': 15, 'tags': ['electronics', 'wireless']}
+{'sku': 'C', 'name': 'Bluetooth Speaker', 'price': 45, 'stock': 8, 'tags': ['electronics', 'wireless', 'premium']}
+{'sku': 'H', 'name': 'Wireless Earbuds', 'price': 55, 'stock': 20, 'tags': ['electronics', 'wireless']}
+
+Products with exactly 2 tags:
+{'sku': 'A', 'name': 'Wireless Mouse', 'price': 25, 'stock': 15, 'tags': ['electronics', 'wireless']}
+{'sku': 'E', 'name': 'Leather Wallet', 'price': 60, 'stock': 12, 'tags': ['accessories', 'premium']}
+{'sku': 'F', 'name': 'Gaming Chair', 'price': 150, 'stock': 0, 'tags': ['furniture', 'premium']}
+{'sku': 'H', 'name': 'Wireless Earbuds', 'price': 55, 'stock': 20, 'tags': ['electronics', 'wireless']}
+
+Pagination - Page 1 (3 per page):
+{'sku': 'C', 'name': 'Bluetooth Speaker', 'price': 45, 'stock': 8, 'tags': ['electronics', 'wireless', 'premium']}
+{'sku': 'D', 'name': 'Cotton T-Shirt', 'price': 15, 'stock': 40, 'tags': ['clothing']}
+{'sku': 'F', 'name': 'Gaming Chair', 'price': 150, 'stock': 0, 'tags': ['furniture', 'premium']}
+
+Pagination - Page 2 (3 per page):
+{'sku': 'E', 'name': 'Leather Wallet', 'price': 60, 'stock': 12, 'tags': ['accessories', 'premium']}
+{'sku': 'J', 'name': 'Notebook Set', 'price': 8, 'stock': 0, 'tags': ['stationery']}
+{'sku': 'I', 'name': 'Office Desk', 'price': 200, 'stock': 5, 'tags': ['furniture']}
+
+Saved to output.json
+Search 'wireless' (lowercase):
+{'sku': 'A', 'name': 'Wireless Mouse', 'price': 25, 'stock': 15, 'tags': ['electronics', 'wireless']}
+{'sku': 'H', 'name': 'Wireless Earbuds', 'price': 55, 'stock': 20, 'tags': ['electronics', 'wireless']}
+
+Search 'COTTON' (uppercase, still matches 'Cotton'):
+{'sku': 'D', 'name': 'Cotton T-Shirt', 'price': 15, 'stock': 40, 'tags': ['clothing']}
+
+Search with special character input '(pack' - handled safely:
+(no crash - re.escape() treated '(' as a literal character)
+
+Winning plan stage: FETCH
+Index bounds used: {'name': ['["", {})', '[/wireless/i, /wireless/i]']}
+
+Note on index efficiency:
+A case-insensitive regex like /wireless/i cannot use a tight index range -
+its bounds are ["", {}), meaning it walks the entire index even though the
+stage name still says IXSCAN. Anchoring (/^wireless/i) doesn't fix this
+either. For real indexed case-insensitive search at scale, MongoDB text
+indexes (or a collation with strength:2) should be used instead of regex.
+
+Saved to output.json
+Upsert existing SKU 'A' with new price:
+matched=1, modified=1, upserted_id=None
+
+Upsert new SKU 'Z' (doesn't exist yet):
+matched=0, modified=0, upserted_id=6afb1564f6d834d51ad59f01
+
+Bulk write result:
+matched_count=5
+modified_count=5
+upserted_count=0
+
+Updated products A-E:
+{'sku': 'A', 'name': 'Wireless Mouse', 'price': 27, 'stock': 25, 'tags': ['electronics', 'wireless']}
+{'sku': 'B', 'name': 'USB Keyboard', 'price': 30, 'stock': 10, 'tags': ['electronics']}
+{'sku': 'C', 'name': 'Bluetooth Speaker', 'price': 45, 'stock': 18, 'tags': ['electronics', 'wireless', 'premium']}
+{'sku': 'D', 'name': 'Cotton T-Shirt', 'price': 15, 'stock': 40, 'tags': ['clothing'], 'is_active': False}
+{'sku': 'E', 'name': 'Leather Wallet', 'price': 60, 'stock': 12, 'tags': ['accessories', 'premium'], 'is_active': False}
+
+Saved to output.json
+First import run:
+matched=0, modified=0, upserted=2
+
+Second import run (same data - should NOT duplicate or modify):
+matched=2, modified=0, upserted=0
+
+Document count for SKU K: 1 (should be 1, not 2)
+Document count for SKU L: 1 (should be 1, not 2)
+
+Saved to output.json

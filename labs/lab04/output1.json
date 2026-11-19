@@ -1,0 +1,49 @@
+{
+  "wireless_results": [
+    {
+      "sku": "H",
+      "name": "Wireless Earbuds",
+      "price": 55,
+      "stock": 20,
+      "tags": [
+        "electronics",
+        "wireless"
+      ]
+    },
+    {
+      "sku": "A",
+      "name": "Wireless Mouse",
+      "price": 25,
+      "stock": 15,
+      "tags": [
+        "electronics",
+        "wireless"
+      ]
+    }
+  ],
+  "index_bounds": "{'name': ['[\"\", {})', '[/wireless/i, /wireless/i]']}"
+}{
+  "wireless_results": [
+    {
+      "sku": "H",
+      "name": "Wireless Earbuds",
+      "price": 55,
+      "stock": 20,
+      "tags": [
+        "electronics",
+        "wireless"
+      ]
+    },
+    {
+      "sku": "A",
+      "name": "Wireless Mouse",
+      "price": 25,
+      "stock": 15,
+      "tags": [
+        "electronics",
+        "wireless"
+      ]
+    }
+  ],
+  "index_bounds": "{'name': ['[\"\", {})', '[/wireless/i, /wireless/i]']}"
+}

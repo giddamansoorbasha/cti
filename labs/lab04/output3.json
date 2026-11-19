@@ -1,0 +1,27 @@
+{
+  "first_run": {
+    "matched": 0,
+    "modified": 0,
+    "upserted": 2
+  },
+  "second_run": {
+    "matched": 2,
+    "modified": 0,
+    "upserted": 0
+  },
+  "sku_K_count": 1,
+  "sku_L_count": 1
+}{
+  "first_run": {
+    "matched": 0,
+    "modified": 0,
+    "upserted": 2
+  },
+  "second_run": {
+    "matched": 2,
+    "modified": 0,
+    "upserted": 0
+  },
+  "sku_K_count": 1,
+  "sku_L_count": 1
+}
