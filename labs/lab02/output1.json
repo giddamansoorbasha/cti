@@ -1,0 +1,18 @@
+{
+  "version": {
+    "atlas": "8.0.37",
+    "docker": "7.0.48"
+  },
+  "storageEngine": {
+    "atlas": null,
+    "docker": null
+  },
+  "gitVersion": {
+    "atlas": "8ece10cbfc3379404a0dffdfb448b9e873b494f7",
+    "docker": "6937736f0539a5d4c8edb2970255b9369cb385a5"
+  },
+  "javascriptEngine": {
+    "atlas": "mozjs",
+    "docker": "mozjs"
+  }
+}

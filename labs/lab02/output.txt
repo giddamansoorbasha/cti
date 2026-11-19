@@ -1,0 +1,55 @@
+Atlas MongoDB version : 8.0.37
+Docker MongoDB version: 7.0.48
+
+Full Atlas server_info():
+{'version': '8.0.37', 'gitVersion': '8ece10cbfc3379404a0dffdfb448b9e873b494f7', 'modules': ['enterprise'], 'allocator': 'tcmalloc-google', 'javascriptEngine': 'mozjs', 'sysInfo': 'deprecated', 'versionArray': [8, 0, 37, 0], 'bits': 64, 'debug': False, 'maxBsonObjectSize': 16777216, 'storageEngines': ['devnull', 'inMemory', 'queryable_wt', 'wiredTiger'], 'ok': 1.0, '$clusterTime': {'clusterTime': Timestamp(1794839656, 1), 'signature': {'hash': b'\x07Z\x86\xe3\xbeK\xd5\xc1\xdb\xb6\xe6\xc6\x16\xeaX\x98\x83\xd6\x13\x93', 'keyId': 7657596173854703636}}, 'operationTime': Timestamp(1794839656, 1)}
+
+Full Docker server_info():
+{'version': '7.0.48', 'gitVersion': '6937736f0539a5d4c8edb2970255b9369cb385a5', 'modules': [], 'allocator': 'tcmalloc', 'javascriptEngine': 'mozjs', 'sysInfo': 'deprecated', 'versionArray': [7, 0, 48, 0], 'openssl': {'running': 'OpenSSL 3.0.2 15 Mar 2022', 'compiled': 'OpenSSL 3.0.2 15 Mar 2022'}, 'buildEnvironment': {'distmod': 'ubuntu2204', 'distarch': 'x86_64', 'cc': '/opt/mongodbtoolchain/v4/bin/gcc: gcc (GCC) 11.3.0', 'ccflags': '-Werror -include mongo/platform/basic.h -ffp-contract=off -fasynchronous-unwind-tables -g2 -Wall -Wsign-compare -Wno-unknown-pragmas -Winvalid-pch -gdwarf-5 -fno-omit-frame-pointer -fno-strict-aliasing -O2 -march=sandybridge -mtune=generic -mprefer-vector-width=128 -Wno-unused-local-typedefs -Wno-unused-function -Wno-deprecated-declarations -Wno-unused-const-variable -Wno-unused-but-set-variable -Wno-missing-braces -fstack-protector-strong -gdwarf64 -Wa,--nocompress-debug-sections -fno-builtin-memcmp -Wimplicit-fallthrough=5', 'cxx': '/opt/mongodbtoolchain/v4/bin/g++: g++ (GCC) 11.3.0', 'cxxflags': '-Woverloaded-virtual -Wpessimizing-move -Wno-maybe-uninitialized -fsized-deallocation -Wno-deprecated -std=c++20', 'linkflags': '-Wl,--fatal-warnings -B/opt/mongodbtoolchain/v4/bin -gdwarf-5 -pthread -Wl,-z,now -fuse-ld=lld -fstack-protector-strong -gdwarf64 -Wl,--build-id -Wl,--hash-style=gnu -Wl,-z,noexecstack -Wl,--warn-execstack -Wl,-z,relro -Wl,--compress-debug-sections=none -Wl,-z,origin -Wl,--enable-new-dtags', 'target_arch': 'x86_64', 'target_os': 'linux', 'cppdefines': 'SAFEINT_USE_INTRINSICS 0 PCRE2_STATIC NDEBUG _XOPEN_SOURCE 700 _GNU_SOURCE _FORTIFY_SOURCE 2 ABSL_FORCE_ALIGNED_ACCESS BOOST_ENABLE_ASSERT_DEBUG_HANDLER BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF BOOST_LOG_NO_SHORTHAND_NAMES BOOST_LOG_USE_NATIVE_SYSLOG BOOST_LOG_WITHOUT_THREAD_ATTR BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS BOOST_SYSTEM_NO_DEPRECATED BOOST_THREAD_USES_DATETIME BOOST_THREAD_VERSION 5'}, 'bits': 64, 'debug': False, 'maxBsonObjectSize': 16777216, 'storageEngines': ['devnull', 'wiredTiger'], 'ok': 1.0}
+
+Saved to server_info.json
+Field               Atlas                    Docker                   
+----------------------------------------------------------------------
+version             8.0.37                   7.0.48                   
+    -> Difference found in 'version'
+storageEngine       None                     None                     
+gitVersion          8ece10cbfc3379404a0dffdfb448b9e873b494f76937736f0539a5d4c8edb2970255b9369cb385a5
+    -> Difference found in 'gitVersion'
+javascriptEngine    mozjs                    mozjs                    
+
+Saved to output.json
+
+Books BEFORE update:
+{'_id': ObjectId('6afb093509499d1dcb3133d4'), 'title': 'Book A', 'year': 2005, 'price': 389.7434200000003}
+{'_id': ObjectId('6afb093509499d1dcb3133d5'), 'title': 'Book B', 'year': 2012, 'price': 300}
+{'_id': ObjectId('6afb093509499d1dcb3133d6'), 'title': 'Book C', 'year': 2008, 'price': 292.3075650000001}
+{'_id': ObjectId('6afb093509499d1dcb3133d7'), 'title': 'Book D', 'year': 2018, 'price': 314.25178324218746}
+{'_id': ObjectId('6afb093509499d1dcb3133d8'), 'title': 'Book E', 'year': 2009, 'price': 428.7177620000002}
+
+Matched: 3, Modified: 3
+
+Books AFTER update:
+{'title': 'Book A', 'year': 2005, 'price': 428.7177620000004}
+{'title': 'Book B', 'year': 2012, 'price': 300}
+{'title': 'Book C', 'year': 2008, 'price': 321.53832150000017}
+{'title': 'Book D', 'year': 2018, 'price': 314.25178324218746}
+{'title': 'Book E', 'year': 2009, 'price': 471.5895382000003}
+
+Saved to books.json
+Books BEFORE update:
+{'_id': ObjectId('6afb093509499d1dcb3133d4'), 'title': 'Book A', 'year': 2005, 'price': 428.7177620000004}
+{'_id': ObjectId('6afb093509499d1dcb3133d5'), 'title': 'Book B', 'year': 2012, 'price': 300}
+{'_id': ObjectId('6afb093509499d1dcb3133d6'), 'title': 'Book C', 'year': 2008, 'price': 321.53832150000017}
+{'_id': ObjectId('6afb093509499d1dcb3133d7'), 'title': 'Book D', 'year': 2018, 'price': 314.25178324218746}
+{'_id': ObjectId('6afb093509499d1dcb3133d8'), 'title': 'Book E', 'year': 2009, 'price': 471.5895382000003}
+
+Matched: 1, Modified: 1
+
+Books AFTER update:
+{'title': 'Book A', 'year': 2005, 'price': 428.7177620000004}
+{'title': 'Book B', 'year': 2012, 'price': 300}
+{'title': 'Book C', 'year': 2008, 'price': 321.53832150000017}
+{'title': 'Book D', 'year': 2018, 'price': 298.53919408007806}
+{'title': 'Book E', 'year': 2009, 'price': 471.5895382000003}
+
+Saved to output.json

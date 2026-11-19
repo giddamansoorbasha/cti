@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Book A",
+    "year": 2005,
+    "price": 428.7177620000004
+  },
+  {
+    "title": "Book B",
+    "year": 2012,
+    "price": 300
+  },
+  {
+    "title": "Book C",
+    "year": 2008,
+    "price": 321.53832150000017
+  },
+  {
+    "title": "Book D",
+    "year": 2018,
+    "price": 314.25178324218746
+  },
+  {
+    "title": "Book E",
+    "year": 2009,
+    "price": 471.5895382000003
+  }
+]
