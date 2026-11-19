@@ -1,0 +1,154 @@
+Inserted: 50000
+
+ ============================================================
+BEFORE INDEXING
+============================================================
+
+Query: Category and Price Sort
+Winning Plan: {'stage': 'SORT', 'sortPattern': {'price': 1}, 'memLimit': 104857600, 'type': 'simple', 'inputStage': {'stage': 'COLLSCAN', 'filter': {'category': {'$eq': 'Electronics'}}, 'direction': 'forward'}}
+Documents Examined: 50000
+Keys Examined: 0
+
+Query: Price Range
+Winning Plan: {'stage': 'COLLSCAN', 'filter': {'$and': [{'price': {'$lte': 2000}}, {'price': {'$gte': 500}}]}, 'direction': 'forward'}
+Documents Examined: 50000
+Keys Examined: 0
+
+Query: Find by Tag
+Winning Plan: {'stage': 'COLLSCAN', 'filter': {'tags': {'$eq': 'popular'}}, 'direction': 'forward'}
+Documents Examined: 50000
+Keys Examined: 0
+
+Query: Name Search
+Winning Plan: {'stage': 'COLLSCAN', 'filter': {'name': {'$regex': '^Product Alpha 1'}}, 'direction': 'forward'}
+Documents Examined: 50000
+Keys Examined: 0
+
+Query: Rating Search and Sort
+Winning Plan: {'stage': 'SORT', 'sortPattern': {'rating': -1}, 'memLimit': 104857600, 'type': 'simple', 'inputStage': {'stage': 'COLLSCAN', 'filter': {'rating': {'$gte': 4}}, 'direction': 'forward'}}
+Documents Examined: 50000
+Keys Examined: 0
+
+Five indexes created successfully.
+
+ ============================================================
+AFTER INDEXING
+============================================================
+
+Query: Category and Price Sort
+Winning Plan: {'stage': 'FETCH', 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'category': 1, 'price': 1}, 'indexName': 'category_price_idx', 'isMultiKey': False, 'multiKeyPaths': {'category': [], 'price': []}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'category': ['["Electronics", "Electronics"]'], 'price': ['[MinKey, MaxKey]']}}}
+Documents Examined: 9971
+Keys Examined: 9971
+
+Query: Price Range
+Winning Plan: {'stage': 'FETCH', 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'price': 1}, 'indexName': 'price_idx', 'isMultiKey': False, 'multiKeyPaths': {'price': []}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'price': ['[500, 2000]']}}}
+Documents Examined: 14914
+Keys Examined: 14914
+
+Query: Find by Tag
+Winning Plan: {'stage': 'FETCH', 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'tags': 1}, 'indexName': 'tags_idx', 'isMultiKey': True, 'multiKeyPaths': {'tags': ['tags']}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'tags': ['["popular", "popular"]']}}}
+Documents Examined: 25000
+Keys Examined: 25000
+
+Query: Name Search
+Winning Plan: {'stage': 'FETCH', 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'name': 1}, 'indexName': 'name_idx', 'isMultiKey': False, 'multiKeyPaths': {'name': []}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'name': ['["Product Alpha 1", "Product Alpha 2")', '[/^Product Alpha 1/, /^Product Alpha 1/]']}}}
+Documents Examined: 11111
+Keys Examined: 11112
+
+Query: Rating Search and Sort
+Winning Plan: {'stage': 'FETCH', 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'rating': -1}, 'indexName': 'rating_idx', 'isMultiKey': False, 'multiKeyPaths': {'rating': []}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'rating': ['[inf.0, 4]']}}}
+Documents Examined: 13083
+Keys Examined: 13083
+
+--- Index List ---
+SON([('v', 2), ('key', SON([('_id', 1)])), ('name', '_id_')])
+SON([('v', 2), ('key', SON([('category', 1), ('price', 1)])), ('name', 'category_price_idx')])
+SON([('v', 2), ('key', SON([('price', 1)])), ('name', 'price_idx')])
+SON([('v', 2), ('key', SON([('tags', 1)])), ('name', 'tags_idx')])
+SON([('v', 2), ('key', SON([('name', 1)])), ('name', 'name_idx')])
+SON([('v', 2), ('key', SON([('rating', -1)])), ('name', 'rating_idx')])
+Executing queries...
+Queries executed successfully.
+
+--- Index Usage Statistics ---
+
+Index Name: price_idx
+Access Count: 10
+Since: 2026-11-16 14:39:11.393000
+
+Index Name: _id_
+Access Count: 0
+Since: 2026-11-16 14:39:10.419000
+
+Index Name: name_idx
+Access Count: 10
+Since: 2026-11-16 14:39:11.716000
+
+Index Name: category_price_idx
+Access Count: 10
+Since: 2026-11-16 14:39:11.261000
+
+Index Name: rating_idx
+Access Count: 10
+Since: 2026-11-16 14:39:11.830000
+
+Index Name: tags_idx
+Access Count: 10
+Since: 2026-11-16 14:39:11.507000
+Insertion without indexes: 0.1601 seconds
+Insertion with indexes: 0.3404 seconds
+Insertion slowdown: 112.65 %
+
+Remaining indexes:
+_id_
+category_price_idx
+
+--- Query Performance With One Index ---
+
+Query: Category and Price Sort
+Winning Plan: {'stage': 'FETCH', 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'category': 1, 'price': 1}, 'indexName': 'category_price_idx', 'isMultiKey': False, 'multiKeyPaths': {'category': [], 'price': []}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'category': ['["Electronics", "Electronics"]'], 'price': ['[MinKey, MaxKey]']}}}
+Documents Examined: 3909
+Keys Examined: 3909
+
+Query: Price Range
+Winning Plan: {'stage': 'COLLSCAN', 'filter': {'$and': [{'price': {'$lte': 2000}}, {'price': {'$gte': 500}}]}, 'direction': 'forward'}
+Documents Examined: 20000
+Keys Examined: 0
+
+Query: Find by Tag
+Winning Plan: {'stage': 'COLLSCAN', 'filter': {'tags': {'$eq': 'popular'}}, 'direction': 'forward'}
+Documents Examined: 20000
+Keys Examined: 0
+
+Query: Name Search
+Winning Plan: {'stage': 'COLLSCAN', 'filter': {'name': {'$regex': '^Product 1'}}, 'direction': 'forward'}
+Documents Examined: 20000
+Keys Examined: 0
+
+Query: Rating Search and Sort
+Winning Plan: {'stage': 'SORT', 'sortPattern': {'rating': -1}, 'memLimit': 104857600, 'type': 'simple', 'inputStage': {'stage': 'COLLSCAN', 'filter': {'rating': {'$gte': 4}}, 'direction': 'forward'}}
+Documents Examined: 20000
+Keys Examined: 0
+Inserted: 10000
+Covered query index created.
+
+--- Covered Query Results ---
+{'category': 'Electronics', 'price': 100.04, 'name': 'Product 4617'}
+{'category': 'Electronics', 'price': 100.29, 'name': 'Product 1893'}
+{'category': 'Electronics', 'price': 103.15, 'name': 'Product 1788'}
+{'category': 'Electronics', 'price': 103.43, 'name': 'Product 1554'}
+{'category': 'Electronics', 'price': 104.37, 'name': 'Product 3618'}
+{'category': 'Electronics', 'price': 108.53, 'name': 'Product 999'}
+{'category': 'Electronics', 'price': 109.25, 'name': 'Product 9168'}
+{'category': 'Electronics', 'price': 109.86, 'name': 'Product 1780'}
+{'category': 'Electronics', 'price': 112.93, 'name': 'Product 9638'}
+{'category': 'Electronics', 'price': 113.51, 'name': 'Product 3859'}
+
+--- Explain Execution Statistics ---
+Winning Plan:
+{'stage': 'PROJECTION_COVERED', 'transformBy': {'_id': 0, 'category': 1, 'price': 1, 'name': 1}, 'inputStage': {'stage': 'IXSCAN', 'keyPattern': {'category': 1, 'price': 1, 'name': 1}, 'indexName': 'covered_query_idx', 'isMultiKey': False, 'multiKeyPaths': {'category': [], 'price': [], 'name': []}, 'isUnique': False, 'isSparse': False, 'isPartial': False, 'indexVersion': 2, 'direction': 'forward', 'indexBounds': {'category': ['["Electronics", "Electronics"]'], 'price': ['[MinKey, MaxKey]'], 'name': ['[MinKey, MaxKey]']}}}
+
+Total Documents Examined: 0
+Total Keys Examined: 2476
+
+Covered Query Verified: FETCH stage eliminated.
