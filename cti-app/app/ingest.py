@@ -19,7 +19,15 @@ FEEDS = [
     ("Cisco Talos", "https://blog.talosintelligence.com/rss/"),
     ("CISA Advisories", "https://www.cisa.gov/cybersecurity-advisories/all.xml"),
     ("SANS ISC", "https://isc.sans.edu/rssfeed.xml"),
+    ("Dark Reading", "https://www.darkreading.com/rss.xml"),
+    ("Unit 42", "https://unit42.paloaltonetworks.com/feed/"),
+    ("Securelist (Kaspersky)", "https://securelist.com/feed/"),
+    ("WeLiveSecurity (ESET)", "https://www.welivesecurity.com/en/rss/feed/"),
+    ("Schneier on Security", "https://www.schneier.com/feed/atom/"),
+    ("Rapid7 Blog", "https://www.rapid7.com/blog/rss/"),
 ]
+
+CISA_KEV_URL = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
 HEADERS = {"User-Agent": "Mozilla/5.0 (CTI-Platform student project)"}
 
 # Ask each RSS source for up to 100 entries. The actual number depends on
@@ -48,6 +56,47 @@ def seed():
         ops.append(UpdateOne({"_id": _id}, {"$set": doc}, upsert=True))
     if ops:
         db.threats.bulk_write(ops)
+
+def fetch_cisa_kev(limit=250):
+    try:
+        r = requests.get(CISA_KEV_URL, headers=HEADERS, timeout=25)
+        r.raise_for_status()
+        vulns = r.json().get("vulnerabilities", [])
+        # Sort newest first
+        vulns.sort(key=lambda v: v.get("dateAdded", ""), reverse=True)
+        ops = []
+        for v in vulns[:limit]:
+            cve = v.get("cveID", "").upper()
+            if not cve:
+                continue
+            title = f"{cve}: {v.get('vulnerabilityName', 'Known Exploited Vulnerability')}"
+            summary = f"{v.get('vendorProject', '')} {v.get('product', '')} - {v.get('shortDescription', '')}".strip()
+            try:
+                pub = datetime.strptime(v.get("dateAdded", ""), "%Y-%m-%d")
+            except Exception:
+                pub = datetime.now(timezone.utc).replace(tzinfo=None)
+
+            meta = classify(title, summary)
+            meta["status"] = "Active"
+            meta["severity"] = "High"
+            if not any(i["value"] == cve for i in meta["iocs"]):
+                meta["iocs"].insert(0, {"type": "cve", "value": cve})
+
+            doc = {
+                "title": title,
+                "url": f"https://nvd.nist.gov/vuln/detail/{cve}",
+                "summary": summary[:1500],
+                "mitigation": v.get("requiredAction", "Apply vendor patches immediately."),
+                "source": "CISA KEV",
+                "published_at": pub,
+                **meta,
+            }
+            ops.append(UpdateOne({"_id": f"kev-{cve}"}, {"$set": doc}, upsert=True))
+        if ops:
+            db.threats.bulk_write(ops)
+        return len(ops)
+    except Exception as ex:
+        return f"failed: {type(ex).__name__}: {ex}"
 
 def fetch_all(per_feed=PER_FEED_LIMIT):
     report = {}
@@ -81,6 +130,7 @@ def fetch_all(per_feed=PER_FEED_LIMIT):
             report[name] = len(ops)
         except Exception as ex:
             report[name] = f"failed: {type(ex).__name__}: {ex}"
+    report["CISA KEV"] = fetch_cisa_kev(limit=250)
     return report
 
 def embed_missing(batch=16):

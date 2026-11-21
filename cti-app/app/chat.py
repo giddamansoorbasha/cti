@@ -12,7 +12,7 @@ SYSTEM = ("You are a Cyber Threat Intelligence assistant. Answer ONLY from the t
 def save(user, role, content, **extra):
     db.history.insert_one({"user": user, "role": role, "content": content, "ts": datetime.utcnow(), **extra})
 
-def history(user, n=6):
+def history(user, n=2):
     docs = list(db.history.find({"user": user, "role": {"$in": ["user", "assistant"]}},
                                 sort=[("ts", -1)], limit=n))[::-1]
     return [{"role": d["role"], "content": d["content"]} for d in docs]

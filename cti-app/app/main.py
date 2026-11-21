@@ -36,12 +36,17 @@ class RoleSet(BaseModel):
     role: str
 
 def embed_loop():
-    for _ in range(60):
+    for _ in range(30):
         try:
-            ingest.embed_missing()
-            return
+            ingest.embed_missing()   # 1. Embed the 14 offline seed threats right away
+            break
         except Exception:
-            time.sleep(10)
+            time.sleep(3)
+    try:
+        ingest.fetch_all()           # 2. Auto-pull live RSS feeds (skips cleanly if offline)
+        ingest.embed_missing()       # 3. Embed the newly fetched threats
+    except Exception:
+        pass
 
 @app.on_event("startup")
 def startup():

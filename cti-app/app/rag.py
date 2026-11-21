@@ -7,7 +7,7 @@ import llm
 FIELDS = {"title": 1, "summary": 1, "url": 1, "source": 1, "type": 1, "severity": 1, "status": 1,
           "platforms": 1, "published_at": 1, "embedding": 1, "iocs": 1, "mitigation": 1}
 
-def retrieve(q, k=5):
+def retrieve(q, k=3):
     flt = {}
     plats = [p for p, rx in PLATFORMS.items() if re.search(rx, q, re.I)]
     if plats:

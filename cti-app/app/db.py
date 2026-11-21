@@ -1,10 +1,8 @@
 import os
-from urllib.parse import quote_plus
 from pymongo import MongoClient
 
-user = quote_plus(os.getenv("MONGO_ROOT_USER", "root"))
-pwd = quote_plus(os.getenv("MONGO_ROOT_PASSWORD", ""))
-uri = os.getenv("MONGO_URI") or f"mongodb://{user}:{pwd}@127.0.0.1:27017/?authSource=admin"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://admin:admin123@127.0.0.1:27017/?authSource=admin")
+DB_NAME = os.getenv("MONGO_DB", "cti")
 
-client = MongoClient(uri, serverSelectionTimeoutMS=5000)
-db = client[os.getenv("MONGO_DB", "chatbot")]
+client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+db = client[DB_NAME]
